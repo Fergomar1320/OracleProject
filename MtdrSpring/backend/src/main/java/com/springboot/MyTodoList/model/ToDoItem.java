@@ -2,73 +2,124 @@ package com.springboot.MyTodoList.model;
 
 
 import javax.persistence.*;
+
+import org.springframework.boot.task.TaskSchedulerCustomizer;
+
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 /*
     representation of the TODOITEM table that exists already
     in the autonomous database
  */
+
+//Edited by Fernando
+
+
+
 @Entity
-@Table(name = "TODOITEM")
+@Table(name = "TODOTASK")
 public class ToDoItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int ID;
-    @Column(name = "DESCRIPTION")
-    String description;
-    @Column(name = "CREATION_TS")
-    OffsetDateTime creation_ts;
-    @Column(name = "done")
-    boolean done;
+    private int taskId;
+
+    @Column(name = "TASK_DESCRIPTION")
+    private String taskDescription;
+
+    @Column(name = "TASK_CREATION_TS")
+    private Date taskCreationTs;
+
+    @Column(name = "TASK_STATUS")
+    @Enumerated(EnumType.STRING)
+    private TaskStatus taskStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID", nullable = false)
+    private OracleUser userId;
+
+    @ManyToOne
+    @JoinColumn(name = "SPRINT_ID", referencedColumnName = "SPRINT_ID", nullable = false)
+    private TodoSprint sprintId;
+
+
     public ToDoItem(){
 
     }
-    public ToDoItem(int ID, String description, OffsetDateTime creation_ts, boolean done) {
-        this.ID = ID;
-        this.description = description;
-        this.creation_ts = creation_ts;
-        this.done = done;
+
+    public ToDoItem(int taskId, String taskDescription, Date taskCreationTs, TaskStatus taskStatus, OracleUser userId, TodoSprint sprintId){
+        this.taskId = taskId;
+        this.taskDescription = taskDescription;
+        this.taskCreationTs = taskCreationTs;
+        this.taskStatus = taskStatus;
+        this.userId = userId;
+        this.sprintId = sprintId;
     }
 
-    public int getID() {
-        return ID;
+    //getters
+    public int getTaskId(){
+        return this.taskId;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public String getTaskDescription(){
+        return this.taskDescription;
     }
 
-    public String getDescription() {
-        return description;
+    public  Date getTaskCreationTS(){
+        return this.taskCreationTs;
+    }
+    
+    public TaskStatus getTaskStatus(){
+        return this.taskStatus;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public OracleUser getOracleUser(){
+        return this.userId;
     }
 
-    public OffsetDateTime getCreation_ts() {
-        return creation_ts;
+    public TodoSprint getTodoSprint(){
+        return this.sprintId;
     }
 
-    public void setCreation_ts(OffsetDateTime creation_ts) {
-        this.creation_ts = creation_ts;
+    //setters
+    public void setTaskId( int taskId){
+        this.taskId = taskId;
     }
 
-    public boolean isDone() {
-        return done;
+    public void setTaskDescription(String taskDescription){
+        this.taskDescription = taskDescription;
     }
 
-    public void setDone(boolean done) {
-        this.done = done;
+    public void setTaskCreation(Date taskCreationTs){
+        this.taskCreationTs = taskCreationTs;
+    }
+
+    public void setTaskStatus (TaskStatus taskStatus){
+        this.taskStatus = taskStatus;
+    }
+
+    public void setOracleUser(OracleUser userId){
+        this.userId = userId;
+    }
+
+    public void setTodoSprint(TodoSprint sprintId){
+        this.sprintId = sprintId;
     }
 
     @Override
-    public String toString() {
-        return "ToDoItem{" +
-                "ID=" + ID +
-                ", description='" + description + '\'' +
-                ", creation_ts=" + creation_ts +
-                ", done=" + done +
+    public String toString(){
+        return "TodoTask{" +
+                "taskId=" + taskId +
+                ", taskDescription='" + taskDescription + '\'' +
+                ", taskCreationTs=" + taskCreationTs +
+                ", taskStatus=" + taskStatus +
+                ", userId=" + userId +
+                ", sprintId=" + sprintId +
                 '}';
+    }
+
+    public enum TaskStatus {
+        NotStarted, InProgress, Done
     }
 }
